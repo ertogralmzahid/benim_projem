@@ -1,0 +1,25 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main  # veya 'master', sen hangi dalı kullanıyorsan
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Repo'yu klonla
+      uses: actions/checkout@v3
+
+    - name: Sunucuya bağlan ve kodu güncelle
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: 13.60.20.253
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd benim_uygulamam
+          git pull || echo "İlk kez çalıştırılıyor"
+          echo "Deploy başarıyla tamamlandı - $(date)" >> deploy.log
